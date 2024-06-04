@@ -249,27 +249,8 @@ k=1;
 for h=1:length(vals) 
     j=1;
 while j==1
-    if h>=8
-        elementPicoBcha=h;
-        elementPicoBchb=24+h;
-        elementPicoBchc=32+h;
-        elementPicoBchd=56+h;
-        elementPicoDcha=64+h;
-        elementPicoDchb=88+h;
-        elementPicoDchc=96+h;
-        elementPicoDchd=120+h;
-    else
-        elementPicoBcha=h;
-        elementPicoBchb=8+h;
-        elementPicoBchc=32+h;
-        elementPicoBchd=40+h;
-        elementPicoDcha=64+h;
-        elementPicoDchb=72+h;
-        elementPicoDchc=96+h;
-        elementPicoDchd=104+h;        
-    end
-name=['elements'+ string(elementPicoBcha)+'_'+string(elementPicoBchb)+'_'+string(elementPicoBchc)+'_'+string(elementPicoBchd)+...
-    '_'+string(elementPicoDcha)+'_'+string(elementPicoDchb)+'_'+string(elementPicoDchc)+'_'+string(elementPicoDchd)];
+currentvals=string(vals(k))+"-"+string(vals(k)+7);
+name="vals"+currentvals;
 msg=("do you want to record "+name);
 opts=["yes","no"];
 choice=menu(msg,opts);
@@ -325,8 +306,6 @@ scope1.timeNs = double(scope1.timeIntervalNanoSeconds) * downsamplingRatio * dou
 scope1.timeMs = scope1.timeNs / 1e6;
 scope2.timeNs = double(scope2.timeIntervalNanoSeconds) * downsamplingRatio * double(0:scope2.numSamples - 1);
 scope2.timeMs = scope2.timeNs / 1e6;
-%find maximum amplitude
-maximumYvalue=1.2*max([max(scope1.chA),max(scope1.chB),max(scope1.chC),max(scope1.chD),max(scope2.chA),max(scope2.chB),max(scope2.chC),max(scope2.chD)]);
 
 %% generate all plots from data
 %picoscope 1 plots will have a black line and the picoscope 2 plots will
@@ -340,63 +319,55 @@ title('Scope B Channel 1');
 xlabel('Time (ms)');
 ylabel('Voltage (mV)');
 grid('on');
-ylim([-maximumYvalue,maximumYvalue])
 
 subplot(4,2,2)
 plot(scope1.timeMs, scope1.chB, 'b');
-title('Scope B Channel 2');
+title('Scope B Channel 1');
 xlabel('Time (ms)');
 ylabel('Voltage (mV)');
 grid('on');
-ylim([-maximumYvalue,maximumYvalue])
 
 subplot(4,2,3)
 plot(scope1.timeMs, scope1.chC, 'b');
-title('Scope B Channel 3');
+title('Channel C1');
 xlabel('Time (ms)');
 ylabel('Voltage (mV)');
 grid('on');
-ylim([-maximumYvalue,maximumYvalue])
 
 subplot(4,2,4)
 plot(scope1.timeMs, scope1.chD, 'b');
-title('Scope B Channel 4');
+title('Channel D1');
 xlabel('Time (ms)');
 ylabel('Voltage (mV)');
 grid('on');
-ylim([-maximumYvalue,maximumYvalue])
 
 subplot(4,2,5)
 plot(scope2.timeMs, scope2.chA, 'r');
-title('Scope D Channel 1');
+title('Channel A2');
 xlabel('Time (ms)');
 ylabel('Voltage (mV)');
 grid('on');
-ylim([-maximumYvalue,maximumYvalue])
 
 subplot(4,2,6)
 plot(scope2.timeMs, scope2.chB, 'r');
-title('Scope D Channel 2');
+title('Channel B2');
 xlabel('Time (ms)');
 ylabel('Voltage (mV)');
 grid('on');
-ylim([-maximumYvalue,maximumYvalue])
 
 subplot(4,2,7)
 plot(scope2.timeMs, scope2.chC, 'r');
-title('Scope D Channel 3');
+title('Channel C2');
 xlabel('Time (ms)');
 ylabel('Voltage (mV)');
 grid('on');
-ylim([-maximumYvalue,maximumYvalue])
 
 subplot(4,2,8)
 plot(scope2.timeMs, scope2.chD, 'r');
-title('Scope D Channel 4');
+title('Channel D2');
 xlabel('Time (ms)');
 ylabel('Voltage (mV)');
 grid('on');
-ylim([-maximumYvalue,maximumYvalue])
 
 
 %% stop device
@@ -405,9 +376,8 @@ ylim([-maximumYvalue,maximumYvalue])
 [status2.stop] = invoke(ps5000aDeviceObj2, 'ps5000aStop');
 
 
-%% save data
-datafile1=['timeMs','element'+ string(elementPicoBcha),'element'+ string(elementPicoBchb),'element'+ string(elementPicoBchc),'element'+ string(elementPicoBchd),'elements'+ string(elementPicoDcha),'elements'+ string(elementPicoDchb),'elements'+ string(elementPicoDchc),'elements'+ string(elementPicoDchd)
-    scope1.timeMs',scope1.chA,scope1.chB,scope1.chC,scope1.chD,scope2.chA,scope2.chB,scope2.chC,scope2.chD];
+% save data
+datafile1=[scope1.timeMs',scope1.chA,scope1.chB,scope1.chC,scope1.chD,scope2.timeMs',scope2.chA,scope2.chB,scope2.chC,scope2.chD];
  
 namef=append(name,'.csv');
 writematrix(datafile1,namef);
